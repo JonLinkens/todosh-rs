@@ -1,5 +1,7 @@
 use std::env;
 use std::fs::File;
+use std::fs::OpenOptions;
+use std::io::prelude::*;
 use std::path;
 use termion::color;
 
@@ -17,11 +19,26 @@ pub fn create_list() {
 }
 
 pub fn list_tasks() {
-    println!("called list command");
+    if check_list_exists() {
+    } else {
+        println!("A list does not exist here")
+    }
 }
 
 pub fn add_task(task: String) {
-    println!("called add task command with {}", task);
+    if check_list_exists() {
+        let mut file = OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open("tasks.todo")
+            .unwrap();
+        if let Err(e) = writeln!(file, "{}", task) {
+            eprintln!("Couldn't write task to list: {}", e);
+        }
+        println!("{}Task added: {}", color::Fg(color::LightGreen), task)
+    } else {
+        println!("A list does not exist here")
+    }
 }
 
 pub fn finish_task(tasknum: i32) {
