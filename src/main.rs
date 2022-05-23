@@ -4,7 +4,7 @@ mod cmd;
 
 #[derive(Debug, Parser)]
 #[clap(name = "todosh")]
-#[clap(about = "A lightweight CLI todo list manager", long_about = None)]
+#[clap(author="Jon Linkens", version="0.1.0", about = "a lightweight CLI todo list manager", long_about = None)]
 struct Cli {
     #[clap(subcommand)]
     command: Commands,
@@ -15,7 +15,7 @@ enum Commands {
     /// create a new todo list
     Create {},
 
-    /// pushes things
+    /// lists tasks to complete
     List {},
 
     /// appends a task to the list
