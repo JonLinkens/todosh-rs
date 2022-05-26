@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 termion = "*"
 clap = {version = "3.1.18", features = ["derive"]}
+question = "0.2.2"
