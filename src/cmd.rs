@@ -18,14 +18,13 @@ pub fn create_list() {
     } else {
         File::create("tasks.todo").expect("Error encountered while creating tasks file");
         File::create("completed.todo").expect("Error encountered while creating tasks file");
-        println!("List files created")
+        println!("{}List files created", color::Fg(color::LightGreen))
     }
 }
 
 pub fn list_tasks() {
-    if list_does_not_exist() {
-        println!("{}A list does not exist here", color::Fg(color::LightRed));
-        return;
+    if no_list_message(){
+        return
     }
 
     let dir = env::current_dir().unwrap();
@@ -50,9 +49,8 @@ pub fn list_tasks() {
 }
 
 pub fn add_task(task: String) {
-    if list_does_not_exist() {
-        println!("{}A list does not exist here", color::Fg(color::LightRed));
-        return;
+    if no_list_message(){
+        return
     }
 
     let mut file = OpenOptions::new()
@@ -67,9 +65,8 @@ pub fn add_task(task: String) {
 }
 
 pub fn finish_task(tasknum: usize) {
-    if list_does_not_exist() {
-        println!("{}A list does not exist here", color::Fg(color::LightRed));
-        return;
+    if no_list_message(){
+        return
     }
 
     let file_in = File::open("tasks.todo").expect("Tasks file cannot be found");
@@ -100,6 +97,9 @@ pub fn finish_task(tasknum: usize) {
 
 
 pub fn delete_list() -> std::io::Result<()> {
+    if no_list_message(){
+        return Ok(()); 
+    }
     println!("This will irreversibly delete the todo list in this directory.");
     let answer = Question::new("Continue?")
         .default(Answer::NO)
@@ -117,7 +117,16 @@ pub fn delete_list() -> std::io::Result<()> {
     }
 }
 
-// =======================================================================
+
+// Utils =================================================================
+
+fn no_list_message() -> bool {
+    if list_does_not_exist(){
+        println!("{}A list does not exist here, use the create command.", color::Fg(color::LightRed));
+        return true;
+    }
+    return false;
+}
 
 fn list_does_not_exist() -> bool {
     let mut dir: path::PathBuf = env::current_dir().unwrap();
@@ -148,12 +157,18 @@ fn print_completed() -> Result<(), Box<dyn std::error::Error>> {
     let file_in = File::open("completed.todo").expect("Completed tasks file cannot be found");
     let content = BufReader::new(&file_in);
     let mut lines: Vec<String> = content.lines().collect::<Result<_, _>>().unwrap();
-    lines.reverse();
+    if lines.len() > 0 {
 
-    let recent_tasks = &lines[0..5];
-    for (i, line) in recent_tasks.iter().enumerate() {
-        println!("{}\t{} {}{}", color::Fg(color::LightGreen), lines.len()-(i), line, color::Fg(color::Reset));
+        lines.reverse();
+        let mut recent_tasks = &lines[0..];
+        if lines.len() > 5 {
+            recent_tasks = &lines[0..5];
+        } 
+
+        for (i, line) in recent_tasks.iter().enumerate() {
+            println!("{}\t{} {}{}", color::Fg(color::LightGreen), lines.len()-(i), line, color::Fg(color::Reset));
+        }
+        
     }
-
     Ok(())
 }
