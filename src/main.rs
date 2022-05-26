@@ -29,7 +29,7 @@ enum Commands {
     #[clap(arg_required_else_help = true)]
     Finish {
         /// number of task to finish
-        tasknum: i32,
+        tasknum: usize,
     },
 
     /// delete a task list
@@ -53,7 +53,10 @@ fn main() {
             cmd::finish_task(tasknum);
         }
         Commands::Delete {} => {
-            cmd::delete_list();
+            match cmd::delete_list() {
+                Err(e) => println!("{:?}", e),
+                _ => (),
+            }
         }
     }
 }
