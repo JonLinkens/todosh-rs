@@ -3,7 +3,7 @@
 A lightweight CLI to do list manager.
 
 <p align="center">
-  <img src="https://i.ibb.co/4ZDTCw4/Screenshot-2022-05-26-at-18-38-25.png">
+  <img src="https://i.imgur.com/w1Ebztp.png">
 </p>
 
 Open tasks stored in local `task.todo` file, with completed tasks stored in `completed.todo`.  
